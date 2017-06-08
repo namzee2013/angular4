@@ -1,24 +1,30 @@
-import { Injectable }              from '@angular/core';
-import { Http, Response }          from '@angular/http';
+import { Injectable } from '@angular/core';
+import { USERS } from './mock-users';
+import { User } from './user.model';
+import { Http , Response} from '@angular/http';
 import { Observable } from 'rxjs/Observable';
+
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/toPromise';
-
-import { User } from './user.model';
 
 @Injectable()
-export class UserService {
-  private url = 'http://localhost:3000/api/user';
-  USERS : User[] = [{"name":"thanh nam","email":"nam@gmail.com"},{"name":"Nguyet","email":"nguyet@gmail.com"}];
 
-  constructor(private http: Http){}
+export class UserService{
 
-  getUser(): Observable<any>{
-    return this.http.get(this.url)
-                    .map((res:Response) => res.json())
-                    .catch(this.handleError);
+  constructor (private http: Http) {}
+
+  getUsers (): Observable<any>{
+    return this.http
+      .get('http://localhost:3000/api/user')
+      .map(this.extractData)
+      .catch(this.handleError)
   }
+
+  private extractData(res: Response) {
+    let body = res.json();
+    return body || { };
+  }
+
   private handleError (error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure
     let errMsg: string;
@@ -32,4 +38,5 @@ export class UserService {
     console.error(errMsg);
     return Observable.throw(errMsg);
   }
+
 }

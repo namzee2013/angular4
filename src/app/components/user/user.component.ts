@@ -1,16 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { UserService } from './user.serivce';
-import { User } from './user.model';
+import { Observable }       from 'rxjs/Observable';
+import { User } from './shared/user.model';
+import { UserService } from './shared/user.serivce';
+
 @Component({
   templateUrl: './user.component.html',
   providers:[UserService]
 })
 export class UserComponent implements OnInit {
 
-  USERS: User[] = [];
+  users: User[] = [];
+  errorMessage: string;
+
   constructor(private _userService: UserService) {
-    var data = _userService.getUser();
-    console.log(data)
+    // this.getUsers();
+    // console.log(this.errorMessage)
   }
+
+  getUsers(){
+    this._userService.getUsers().subscribe(
+      data => {
+        this.users = data;
+        console.log(data)
+      },
+      error => {
+        this.errorMessage = <any>error;
+      }
+    )
+  }
+
   ngOnInit(){}
+
 }
